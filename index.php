@@ -603,6 +603,86 @@ if (!empty($home_sections)) {
                     begins here.
                 </h1>
             </div>
+
+            <?php get_template_part('/template-parts/search') ?>
+        </div>
+
+        <div class="trip-slider-section relative w-full px-4 md:px-20 mt-16 mb-16">
+            <div class="swiper trip-swiper">
+                <div class="swiper-wrapper">
+                    <!-- Black Friday Offer Card -->
+                    <div class="swiper-slide">
+                        <div class="bg-[#095763] rounded-[20px] p-10 h-full flex flex-col items-center text-center">
+                            <h3 class="font-['Berkshire_Swash'] text-[#C8EC1F] text-[40px] leading-[44px] mt-6 mb-8">
+                                Black friday offer</h3>
+                            <p class="text-white text-[20px] font-medium mb-8">100$ off on all trips during November !
+                            </p>
+                            <p class="text-white/80 text-base mb-8">A private visit to Queen Nefertari's Tomb, known as
+                                the with an expert Egyptologist as the guide.</p>
+                            <div class="flex-grow flex items-center justify-center">
+                                <button
+                                    class="bg-[#C8E677] text-[#06414A] py-3 px-6 md:px-20 w-full md:w-fit rounded-full hover:bg-opacity-90 transition-colors">
+                                    Book Trip
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Luxor Trip Card -->
+                    <div class="swiper-slide">
+                        <div class="rounded-[20px] overflow-hidden h-full relative">
+                            <div class="w-full h-full">
+                                <img src="<?php echo get_template_directory_uri()?>/images/swipe1.jpg" alt="Luxor" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/20 to-black/60">
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8">
+                                    <h3 class="text-white text-2xl font-semibold mb-3">Luxor Trips</h3>
+                                    <p class="text-white/90 ">A private visit to Queen Nefertari's Tomb, known as the
+                                        with an expert Egyptologist as the guide.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cairo Trip Card -->
+                    <div class="swiper-slide">
+                        <div class="rounded-[20px] overflow-hidden h-full relative">
+                            <div class="w-full h-full">
+                                <img src="<?php echo get_template_directory_uri()?>/images/swipe2.jpg" alt="Cairo" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/20 to-black/60">
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8">
+                                    <h3 class="text-white text-2xl font-semibold mb-3">Cairo Trips</h3>
+                                    <p class="text-white/90 text-base">A private visit to Queen Nefertari's Tomb, known
+                                        as the with an expert Egyptologist as the guide.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hurghada Trip Card -->
+                    <div class="swiper-slide">
+                        <div class="rounded-[20px] overflow-hidden h-full relative">
+                            <div class="w-full h-full">
+                                <img src="<?php echo get_template_directory_uri()?>/images/swipe3.jpg" alt="Hurghada" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/20 to-black/60">
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 p-8">
+                                    <h3 class="text-white text-2xl font-semibold mb-3">Hurghada Trips</h3>
+                                    <p class="text-white/90 text-base">A private visit to Queen Nefertari's Tomb, known
+                                        as the with an expert Egyptologist as the guide.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="swiper-button-prev">
+                </div>
+                <div class="swiper-button-next">
+                </div>
+            </div>
         </div>
     </section>
         <?php
@@ -610,6 +690,109 @@ if (!empty($home_sections)) {
 
 
      get_template_part('template-parts/sale'); 
+
+    
+// Query top destinations
+$args = array(
+    'post_type'      => 'destination',
+    'posts_per_page' => 5, // Retrieve top 5 destinations
+    'meta_query'     => array(
+        array(
+            'key'   => 'top_destination',
+            'value' => '1',
+        ),
+    ),
+);
+
+$top_destinations = new WP_Query($args);
+$destinations = [];
+
+if ($top_destinations->have_posts()) {
+    while ($top_destinations->have_posts()) {
+        $top_destinations->the_post();
+        $destinations[] = [
+            'title' => get_the_title(),
+           'link' => get_permalink(get_the_ID()),
+            'image' => has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'large') : '',
+        ];
+    }
+}
+wp_reset_postdata();
+?>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 mt-16">
+    <!-- Header -->
+    <div class="top flex justify-between items-center mb-8">
+        <h2 class="text-[#095763]">Our Top Destinations</h2>
+        <a href="#"
+            class="text-[#095763] whitespace-nowrap leading-[25.6px] relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-[#095763] hover:after:bg-[#095763]/70 after:transition-colors">
+            Explore more
+        </a>
+    </div>
+
+    <?php if (count($destinations) === 5): ?>
+        <!-- Destinations Grid Container for exactly 5 destinations -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 md:h-[600px]">
+            <!-- Left Side Cards -->
+            <div class="md:col-span-1 grid grid-cols-1 gap-8">
+                <?php for ($i = 0; $i < 2; $i++): ?>
+                    <div class="relative rounded-2xl overflow-hidden h-64 md:h-[280px]">
+                        <a href="<?php the_permalink(); ?>">
+                            <img src="<?php echo esc_url($destinations[$i]['image']); ?>" alt="<?php echo esc_attr($destinations[$i]['title']); ?>" class="w-full h-full object-cover" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <h3 class="text-white text-xl font-semibold mb-2"><?php echo esc_html($destinations[$i]['title']); ?></h3>
+                            </div>
+                        </a>
+                    </div>
+                <?php endfor; ?>
+            </div>
+
+            <!-- Center Card -->
+            <div class="md:col-span-2 relative rounded-2xl overflow-hidden h-64 md:h-full">
+                <a href="<?php echo esc_url($destinations[2]['link']); ?>">
+                    <img src="<?php echo esc_url($destinations[2]['image']); ?>" alt="<?php echo esc_attr($destinations[2]['title']); ?>" class="w-full h-full object-cover" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-6">
+                        <h3 class="text-white text-2xl font-semibold mb-2"><?php echo esc_html($destinations[2]['title']); ?></h3>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Right Side Cards -->
+            <div class="md:col-span-2 grid grid-cols-1 gap-4">
+                <?php for ($i = 3; $i < 5; $i++): ?>
+                    <div class="relative rounded-2xl overflow-hidden h-64 md:h-[290px]">
+                        <a href="<?php echo esc_url($destinations[$i]['link']); ?>">
+                            <img src="<?php echo esc_url($destinations[$i]['image']); ?>" alt="<?php echo esc_attr($destinations[$i]['title']); ?>" class="w-full h-full object-cover" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 p-6">
+                                <h3 class="text-white text-xl font-semibold mb-2"><?php echo esc_html($destinations[$i]['title']); ?></h3>
+                            </div>
+                        </a>
+                    </div>
+                <?php endfor; ?>
+            </div>
+        </div>
+
+    <?php else: ?>
+        <!-- Uniform Grid for fewer than 5 destinations -->
+        <div class="grid grid-cols-1 md:grid-cols-<?php echo count($destinations) < 3 ? '1' : '3'; ?> gap-4">
+            <?php foreach ($destinations as $destination): ?>
+                <div class="relative rounded-2xl overflow-hidden h-64">
+                    <a href="<?php echo esc_url($destination['link']); ?>">
+                        <img src="<?php echo esc_url($destination['image']); ?>" alt="<?php echo esc_attr($destination['title']); ?>" class="w-full h-full object-cover" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-6">
+                            <h3 class="text-white text-xl font-semibold mb-2"><?php echo esc_html($destination['title']); ?></h3>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
+<?php
      get_template_part('template-parts/why-us');
 
     // Manually get section2
@@ -744,112 +927,12 @@ if (!empty($gallery_images) && is_array($gallery_images)) :
 
 
 
-<?php
-// Query top destinations
-$args = array(
-    'post_type'      => 'destination',
-    'posts_per_page' => 5, // Retrieve top 5 destinations
-    'meta_query'     => array(
-        array(
-            'key'   => 'top_destination',
-            'value' => '1',
-        ),
-    ),
-);
-
-$top_destinations = new WP_Query($args);
-$destinations = [];
-
-if ($top_destinations->have_posts()) {
-    while ($top_destinations->have_posts()) {
-        $top_destinations->the_post();
-        $destinations[] = [
-            'title' => get_the_title(),
-           'link' => get_permalink(get_the_ID()),
-            'image' => has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'large') : '',
-        ];
-    }
-}
-wp_reset_postdata();
-?>
-
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8 mt-16">
-    <!-- Header -->
-    <div class="top flex justify-between items-center mb-8">
-        <h2 class="text-[#095763]">Our Top Destinations</h2>
-        <a href="#"
-            class="text-[#095763] whitespace-nowrap leading-[25.6px] relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-[#095763] hover:after:bg-[#095763]/70 after:transition-colors">
-            Explore more
-        </a>
-    </div>
-
-    <?php if (count($destinations) === 5): ?>
-        <!-- Destinations Grid Container for exactly 5 destinations -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 md:h-[600px]">
-            <!-- Left Side Cards -->
-            <div class="md:col-span-1 grid grid-cols-1 gap-8">
-                <?php for ($i = 0; $i < 2; $i++): ?>
-                    <div class="relative rounded-2xl overflow-hidden h-64 md:h-[280px]">
-                        <a href="<?php the_permalink(); ?>">
-                            <img src="<?php echo esc_url($destinations[$i]['image']); ?>" alt="<?php echo esc_attr($destinations[$i]['title']); ?>" class="w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 p-6">
-                                <h3 class="text-white text-xl font-semibold mb-2"><?php echo esc_html($destinations[$i]['title']); ?></h3>
-                            </div>
-                        </a>
-                    </div>
-                <?php endfor; ?>
-            </div>
-
-            <!-- Center Card -->
-            <div class="md:col-span-2 relative rounded-2xl overflow-hidden h-64 md:h-full">
-                <a href="<?php echo esc_url($destinations[2]['link']); ?>">
-                    <img src="<?php echo esc_url($destinations[2]['image']); ?>" alt="<?php echo esc_attr($destinations[2]['title']); ?>" class="w-full h-full object-cover" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-6">
-                        <h3 class="text-white text-2xl font-semibold mb-2"><?php echo esc_html($destinations[2]['title']); ?></h3>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Right Side Cards -->
-            <div class="md:col-span-2 grid grid-cols-1 gap-4">
-                <?php for ($i = 3; $i < 5; $i++): ?>
-                    <div class="relative rounded-2xl overflow-hidden h-64 md:h-[290px]">
-                        <a href="<?php echo esc_url($destinations[$i]['link']); ?>">
-                            <img src="<?php echo esc_url($destinations[$i]['image']); ?>" alt="<?php echo esc_attr($destinations[$i]['title']); ?>" class="w-full h-full object-cover" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 p-6">
-                                <h3 class="text-white text-xl font-semibold mb-2"><?php echo esc_html($destinations[$i]['title']); ?></h3>
-                            </div>
-                        </a>
-                    </div>
-                <?php endfor; ?>
-            </div>
-        </div>
-
-    <?php else: ?>
-        <!-- Uniform Grid for fewer than 5 destinations -->
-        <div class="grid grid-cols-1 md:grid-cols-<?php echo count($destinations) < 3 ? '1' : '3'; ?> gap-4">
-            <?php foreach ($destinations as $destination): ?>
-                <div class="relative rounded-2xl overflow-hidden h-64">
-                    <a href="<?php echo esc_url($destination['link']); ?>">
-                        <img src="<?php echo esc_url($destination['image']); ?>" alt="<?php echo esc_attr($destination['title']); ?>" class="w-full h-full object-cover" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                        <div class="absolute bottom-0 left-0 p-6">
-                            <h3 class="text-white text-xl font-semibold mb-2"><?php echo esc_html($destination['title']); ?></h3>
-                        </div>
-                    </a>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-</div>
 
 
 
 
 
+<?php get_template_part('template-parts/scroll-to-top');?>
 <!-- add footer to the page  -->
  <?php get_template_part('template-parts/footer'); ?>
 

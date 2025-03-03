@@ -1,0 +1,43 @@
+.why  {
+    color : #095763;
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 64px;
+    }
+    .why span {
+    font-family: "Berkshire Swash" !;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 102.4px;
+    color: #C8EC1F;
+    }
+    
+    @media (max-width:768px) {
+        .why  {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 38.4px;
+    }
+    
+    .why span {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 51.2px;
+    }
+    
+    }
+    .why-h3 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 38.4px;
+    color :#095763;
+    }
+    
+    
+    .why-p {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 28.8px;
+    text-align: center;
+    color :#5A5B59;
+    }
