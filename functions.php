@@ -1,154 +1,5 @@
 <?php
 
-function custom_admin_styles() {
-    echo '
-    <style>
-       body.wp-admin {
-            background:#F0F7F7;
-;
-
-        }
-        #adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap {
-            background-color: #06414A !important; 
-            width: 250px !important;
-        }
-
-        #wpcontent, #wpfooter {
-            margin-left: 250px !important;
-        }
-    </style>
-    ';
-}
-
-add_action("admin_head", "custom_admin_styles");
-
-function custom_admin_toolbar_styles() { ?>
-    <style>
-        #wpadminbar {
-            background-color: #06414A !important;
-        }
-    </style>
-<?php }
-add_action('admin_head', 'custom_admin_toolbar_styles');
-
-function custom_login_logo() { ?>
-    <style>
-        .login h1 a {
-            background-image:url('<?php echo get_template_directory_uri(); ?>/images/logo_fotr.png') !important; /* Replace with your logo URL */
-            background-size: contain !important;
-            width: 100% !important;
-            height: 80px !important;
-        }
-    </style>
-<?php }
-add_action('login_head', 'custom_login_logo');
-
-function custom_admin_logo() { ?>
-    <style>
-        #wp-admin-bar-wp-logo > .ab-item .ab-icon {
-            background-image: url('<?php echo get_template_directory_uri(); ?>/images/logo_fotr.png') !important;
-            background-size: contain !important;
-        }
-    </style>
-<?php }
-add_action('admin_head', 'custom_admin_logo');
-
-function custom_styles() { ?>
-    <style>
-     .fields-container  input ,  .fields-container textarea{
-    border: 1px solid #ccc !important;
-    border-radius: 8px !important;
-    outline: none !important;
-    width:60% !important;
-    margin-bottom: 16px !important;
-    padding: 4px !important;
-    
-}
-  .sm-inputs{
-    border: 1px solid #ccc !important;
-    border-radius: 4px !important;
-    outline: none !important;
-    width:40% !important;
-    margin-bottom: 16px !important;
-    padding: 4px !important;
-    
-}
-.upload{
-    background-color:#276C76 !important;
-    color:#fff !important ;
-}
-.remove {
-    background-color: #FF0000 !important;
-    color:#fff !important ;
-}
-.upload , .remove{
-    border:none !important;
-    min-width: 100px !important;
-    padding:4px !important;
-}
-.remove.sm-rm-btn{
-    min-width: 60px !important;
-}
-.fields-container img {
-    width:90px !important;
-    height:90px !important;
-    object-fit:cover !important;
-}
-.gallery-container{
-    display:flex !important;
-    gap:8px !important;
-}
-.fields-container img , .gallery-container img{
-    width:90px !important;
-    height:90px !important;
-    object-fit:cover !important;
-    border-radius:8px !important;
-    margin-bottom:10px !important;
-}
-.des-box {
-    display:flex;
-    gap:10px;
-}
-.selected-destination {
-    border-radius: 4px !important;
-    padding: 8px 12px !important;
-    color:#276C76 !important;
-    background-color: #C8E677 !important;
-    font-weight:bold;
-    height:20px;
-    font-size:14px;
-    margin-bottom:10px;
-
-}
-/* #wpadminbar {
-    display: none !important;
-} */
-    </style>
-<?php }
-add_action('admin_head', 'custom_styles');
-
-
-
-function remove_wp_logo( $wp_admin_bar ) {
-    $wp_admin_bar->remove_node('wp-logo');
-}
-add_action('admin_bar_menu', 'remove_wp_logo', 999);
-
-
-
-?>
-<!-- <script>
-document.addEventListener("DOMContentLoaded", function () {
-    window.addEventListener("load", function () {
-        const adminBar = document.getElementById("wpadminbar");
-        if (adminBar) {
-            adminBar.style.display = "block"; // Show toolbar after full load
-        }
-    });
-});
-
-</script> -->
-<?php 
 // include customizer file 
 // posts
 // 1-the post thumbnail it does not exist in all themes
@@ -595,16 +446,14 @@ function render_section_meta_boxes($post) {
     </script>
 
     <!-- Gallery Images -->
+    <!-- NEW MULTI-IMAGE FIELD -->
     <h3>Gallery Images</h3>
-    <div id="gallery-images gallery-container" >
+    <div id="gallery-images">
         <?php 
         $gallery_images = get_post_meta($post->ID, '_gallery_images', true) ?: [];
         if (!empty($gallery_images)) {
             foreach ($gallery_images as $image) {
-            
-         
-             render_gallery_image_field($image); 
-         
+                render_gallery_image_field($image);
             }
         }
         ?>
@@ -618,6 +467,8 @@ function render_section_meta_boxes($post) {
     <script type="text/template" id="gallery-image-template">
         <?php render_gallery_image_field(''); ?>
     </script>
+
+   
 
     <!-- Remove Empty Containers & Handle AJAX Removal -->
     <script>
@@ -716,6 +567,8 @@ function render_repeater_field($index, $data = []) {
 <?php
 }
 
+
+
 // Function to Render a Single Gallery Image Field
 function render_gallery_image_field($image = '') { ?>
     <div class="gallery-image-field "   >
@@ -724,7 +577,7 @@ function render_gallery_image_field($image = '') { ?>
             <img src="<?= esc_url($image) ?>" style="width:90px;height:90px;border-radius:8px; object-fit:cover">
         <?php endif; ?>
         <button type="button" class="button remove sm-rm-btn remove-gallery-image" style = "margin:8px 0">Remove</button>
-        <!-- <button type="button" class="button upload-gallery-image">Upload</button> -->
+        <button type="button" class="button upload-gallery-image">Upload</button>
    
     </div>
   
@@ -767,8 +620,8 @@ function add_repeater_script() {
                 frame.open();
             });
 
-            // ADD GALLERY IMAGE FIELD
-            $('.add-gallery-image').on('click', function () {
+                   // ADD GALLERY IMAGE FIELD
+                   $('.add-gallery-image').on('click', function () {
                 let template = $('#gallery-image-template').html();
                 $('#gallery-images').append(template);
             });
@@ -1650,6 +1503,139 @@ function save_trip_meta_data($post_id) {
     update_post_meta($post_id, 'trip_duration', sanitize_text_field($_POST['trip_duration']));
 }
 add_action('save_post', 'save_trip_meta_data');
+
+function custom_admin_styles() {
+    echo '
+    <style>
+       body.wp-admin {
+            background:#F0F7F7;
+;
+
+        }
+        #adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap {
+            background-color: #06414A !important; 
+            width: 250px !important;
+        }
+
+        #wpcontent, #wpfooter {
+            margin-left: 250px !important;
+        }
+    </style>
+    ';
+}
+add_action("admin_head", "custom_admin_styles");
+
+function custom_admin_toolbar_styles() { ?>
+    <style>
+        #wpadminbar {
+            background-color: #06414A !important;
+        }
+    </style>
+<?php }
+add_action('admin_head', 'custom_admin_toolbar_styles');
+
+function custom_login_logo() { ?>
+    <style>
+        .login h1 a {
+            background-image:url('<?php echo get_template_directory_uri(); ?>/images/logo_fotr.png') !important; /* Replace with your logo URL */
+            background-size: contain !important;
+            width: 100% !important;
+            height: 80px !important;
+        }
+    </style>
+<?php }
+add_action('login_head', 'custom_login_logo');
+
+function custom_admin_logo() { ?>
+    <style>
+        #wp-admin-bar-wp-logo > .ab-item .ab-icon {
+            background-image: url('<?php echo get_template_directory_uri(); ?>/images/logo_fotr.png') !important;
+            background-size: contain !important;
+        }
+    </style>
+<?php }
+add_action('admin_head', 'custom_admin_logo');
+
+function custom_styles() { ?>
+    <style>
+     .fields-container  input ,  .fields-container textarea{
+    border: 1px solid #ccc !important;
+    border-radius: 8px !important;
+    outline: none !important;
+    width:60% !important;
+    margin-bottom: 16px !important;
+    padding: 4px !important;
+    
+}
+  .sm-inputs{
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    outline: none !important;
+    width:40% !important;
+    margin-bottom: 16px !important;
+    padding: 4px !important;
+    
+}
+.upload{
+    background-color:#276C76 !important;
+    color:#fff !important ;
+}
+.remove {
+    background-color: #FF0000 !important;
+    color:#fff !important ;
+}
+.upload , .remove{
+    border:none !important;
+    min-width: 100px !important;
+    padding:4px !important;
+}
+.remove.sm-rm-btn{
+    min-width: 60px !important;
+}
+.fields-container img {
+    width:90px !important;
+    height:90px !important;
+    object-fit:cover !important;
+}
+.gallery-container{
+    display:flex !important;
+    gap:8px !important;
+}
+.fields-container img , .gallery-container img{
+    width:90px !important;
+    height:90px !important;
+    object-fit:cover !important;
+    border-radius:8px !important;
+    margin-bottom:10px !important;
+}
+.des-box {
+    display:flex;
+    gap:10px;
+}
+.selected-destination {
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    color:#276C76 !important;
+    background-color: #C8E677 !important;
+    font-weight:bold;
+    height:20px;
+    font-size:14px;
+    margin-bottom:10px;
+
+}
+/* #wpadminbar {
+    display: none !important;
+} */
+    </style>
+<?php }
+add_action('admin_head', 'custom_styles');
+
+
+
+function remove_wp_logo( $wp_admin_bar ) {
+    $wp_admin_bar->remove_node('wp-logo');
+}
+add_action('admin_bar_menu', 'remove_wp_logo', 999);
 
 
 ?>
