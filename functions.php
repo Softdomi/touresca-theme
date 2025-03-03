@@ -1637,5 +1637,21 @@ function remove_wp_logo( $wp_admin_bar ) {
 }
 add_action('admin_bar_menu', 'remove_wp_logo', 999);
 
-
+// to hide to toolbar while the page loaded 
+function fix_admin_bar_visibility() {
+    if (is_admin_bar_showing()) {
+        echo '<style>#wpadminbar { display: none !important; }</style>';
+        echo '<script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    setTimeout(function () {
+                        let adminBar = document.getElementById("wpadminbar");
+                        if (adminBar) {
+                            adminBar.style.setProperty("display", "block", "important");
+                        }
+                    }, 100);
+                });
+              </script>';
+    }
+}
+add_action('wp_head', 'fix_admin_bar_visibility');
 ?>
