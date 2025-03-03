@@ -6,7 +6,7 @@
 // 2-to add it to my see we do the following 
 // to add thumbnail to the post
 add_theme_support( 'post-thumbnails' ); 
-require_once get_template_directory() . "./inc/customizer.php";
+require_once get_template_directory() . "/inc/customizer.php";
 // tp enqueue your styles files 
 function add_styles(){
     // to add css files we use wp_enqueue_style 
