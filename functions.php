@@ -1630,8 +1630,6 @@ function custom_styles() { ?>
 <?php }
 add_action('admin_head', 'custom_styles');
 
-
-
 function remove_wp_logo( $wp_admin_bar ) {
     $wp_admin_bar->remove_node('wp-logo');
 }
