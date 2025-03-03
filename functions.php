@@ -19,6 +19,7 @@ function custom_admin_styles() {
     </style>
     ';
 }
+
 add_action("admin_head", "custom_admin_styles");
 
 function custom_admin_toolbar_styles() { ?>
