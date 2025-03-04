@@ -724,7 +724,7 @@ wp_reset_postdata();
     <!-- Header -->
     <div class="top flex justify-between items-center mb-8">
         <h2 class="text-[#095763]">Our Top Destinations</h2>
-        <a href="<?php echo site_url('/top-destinations'); ?>
+          <a href="<?php echo site_url('/top-destinations'); ?>"
             class="text-[#095763] whitespace-nowrap leading-[25.6px] relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-[#095763] hover:after:bg-[#095763]/70 after:transition-colors">
             Explore more
         </a>
