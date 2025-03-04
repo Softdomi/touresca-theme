@@ -309,7 +309,7 @@ $query = new WP_Query($args);
     <section class="blog-section max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto relative mt-16">
         <div class="flex justify-between items-center pb-6">
             <h3 class="text-[#05363D] text-[26px] md:text-[36px]">Blogs</h3>
-            <a href="<?php echo home_url(); ?>" class=" text-[16px] text-[#05363D] relative view-all">View All</a>
+            <a href="<?php echo site_url('/top-destinations'); ?>" class=" text-[16px] text-[#05363D] relative view-all">View All</a>
         </div>
         <div class="swiper blog-swiper">
             <div class="swiper-wrapper">

@@ -61,7 +61,9 @@ if ($nav_logo): ?>
     <a href="<?php echo home_url(); ?>">
     <div class="flex-shrink-0 flex items-center">
                     <div class="flex items-center mb-2">
+                        <a href="<?php echo home_url()?>">
                         <img src="<?php echo esc_url($nav_logo); ?>" alt="Site Logo" class="nav-logo">
+                        </a>
                     </div>
                 </div>
 

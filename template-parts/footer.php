@@ -27,7 +27,9 @@ $location = get_theme_mod("footer_location");
                 <div class="col-span-8 md:col-span-4 flex justify-center md:justify-start items-center order-1 md:order-1">
                     <div class="flex items-center">
                     <?php if ($footer_logo) : ?>
+                        <a href="<?php echo home_url()?>">
                 <img src="<?php echo esc_url($footer_logo) ?>" alt="Touresca Logo" class="">
+                    </a>
             <?php endif; ?>
                       
                     </div>

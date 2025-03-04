@@ -676,7 +676,7 @@ if (!empty($home_sections)) {
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Navigation Buttons -->
                 <div class="swiper-button-prev">
                 </div>
@@ -724,7 +724,7 @@ wp_reset_postdata();
     <!-- Header -->
     <div class="top flex justify-between items-center mb-8">
         <h2 class="text-[#095763]">Our Top Destinations</h2>
-        <a href="#"
+        <a href="<?php echo site_url('/top-destinations'); ?>
             class="text-[#095763] whitespace-nowrap leading-[25.6px] relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-[#095763] hover:after:bg-[#095763]/70 after:transition-colors">
             Explore more
         </a>
@@ -737,7 +737,7 @@ wp_reset_postdata();
             <div class="md:col-span-1 grid grid-cols-1 gap-8">
                 <?php for ($i = 0; $i < 2; $i++): ?>
                     <div class="relative rounded-2xl overflow-hidden h-64 md:h-[280px]">
-                        <a href="<?php the_permalink(); ?>">
+                        <a href="<?php echo esc_url($destinations[$i]['link']); ?>">
                             <img src="<?php echo esc_url($destinations[$i]['image']); ?>" alt="<?php echo esc_attr($destinations[$i]['title']); ?>" class="w-full h-full object-cover" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                             <div class="absolute bottom-0 left-0 p-6">
@@ -794,7 +794,40 @@ wp_reset_postdata();
 </div>
 <?php
      get_template_part('template-parts/why-us');
+?>
 
+<!-- Tour Categories Section -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="tour mb-8">Tour Categories</h2>
+
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- One Day Tour Card -->
+        <a href="#" class="relative rounded-2xl overflow-hidden group h-[350px] block">
+            <img src="<?php echo get_template_directory_uri()?>/images/single.jpg" alt="On Day Tour"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
+            <!-- Text -->
+            <div class="absolute inset-0 flex items-center justify-center">
+                <h3 class="text-white text-3xl font-semibold z-10">On Day Tour</h3>
+            </div>
+        </a>
+
+        <!-- Multi Days Tour Card -->
+        <a href="#" class="relative rounded-2xl overflow-hidden group h-[350px] block">
+            <img src="<?php echo get_template_directory_uri()?>/images/multi.jpg" alt="Multi days Tour"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
+            <!-- Text -->
+            <div class="absolute inset-0 flex items-center justify-center">
+                <h3 class="text-white text-3xl font-semibold z-10">Multi days Tour</h3>
+            </div>
+        </a>
+    </div>
+</section>
+<?php
     // Manually get section2
     if (isset($home_sections[1])) {
         $section1 = $home_sections[1];

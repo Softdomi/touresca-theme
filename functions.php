@@ -1391,6 +1391,103 @@ function save_destination_meta_box($post_id) {
 }
 add_action('save_post', 'save_destination_meta_box');
 
+// Register Tour Types Post Type
+function register_tour_types() {
+    register_post_type('tour_type', array(
+        'labels' => array(
+            'name' => __('Tour Types'),
+            'singular_name' => __('Tour Type')
+        ),
+        'public' => true,
+        'menu_position' => 6,
+        'menu_icon' => 'dashicons-admin-site',
+        'supports' => array('title', 'editor', 'thumbnail'),
+        'show_in_rest' => true
+    ));
+}
+add_action('init', 'register_tour_types');
+
+// Add meta box for Tour Types
+function add_tour_type_meta_box() {
+    add_meta_box(
+        'tour_type_meta',
+        __('Tour Type Details'),
+        'render_tour_type_meta_box',
+        'tour_type',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'add_tour_type_meta_box');
+
+// Render Tour Type Meta Box
+function render_tour_type_meta_box($post) {
+    $tour_types = get_post_meta($post->ID, 'tour_types', true) ?: [];
+    wp_nonce_field('save_tour_type_meta', 'tour_type_nonce');
+    ?>
+    <div id="tour-type-section">
+        <h3>Tour Type Section</h3>
+        <button type="button" id="add-tour-type" class="button">Add Tour Type</button>
+        <div id="tour-type-container">
+            <?php foreach ($tour_types as $index => $tour_type) : ?>
+                <div class="tour-type-item">
+                    <input type="text" name="tour_types[<?php echo $index; ?>][name]" value="<?php echo esc_attr($tour_type['name']); ?>" placeholder="Tour Type Name" class="widefat" />
+                    <input type="hidden" name="tour_types[<?php echo $index; ?>][image]" value="<?php echo esc_url($tour_type['image']); ?>" class="tour-type-image-url" />
+                    <img src="<?php echo esc_url($tour_type['image']); ?>" class="tour-type-preview" style="max-width:100px; display: <?php echo $tour_type['image'] ? 'block' : 'none'; ?>;" />
+                    <button type="button" class="upload-tour-type-image button">Upload Image</button>
+                    <button type="button" class="remove-tour-type button">Remove</button>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <script>
+        jQuery(document).ready(function($) {
+            $('#add-tour-type').click(function() {
+                let index = $('.tour-type-item').length;
+                let newItem = `
+                    <div class="tour-type-item">
+                        <input type="text" name="tour_types[${index}][name]" placeholder="Tour Type Name" class="widefat" />
+                        <input type="hidden" name="tour_types[${index}][image]" class="tour-type-image-url" />
+                        <img src="" class="tour-type-preview" style="max-width:100px; display:none;" />
+                        <button type="button" class="upload-tour-type-image button">Upload Image</button>
+                        <button type="button" class="remove-tour-type button">Remove</button>
+                    </div>
+                `;
+                $('#tour-type-container').append(newItem);
+            });
+            
+            $(document).on('click', '.upload-tour-type-image', function() {
+                let button = $(this);
+                let input = button.siblings('.tour-type-image-url');
+                let preview = button.siblings('.tour-type-preview');
+                
+                wp.media.editor.open();
+                wp.media.editor.send.attachment = function(props, attachment) {
+                    input.val(attachment.url);
+                    preview.attr('src', attachment.url).show();
+                };
+            });
+            
+            $(document).on('click', '.remove-tour-type', function() {
+                $(this).parent().remove();
+            });
+        });
+    </script>
+    <?php
+}
+
+// Save Tour Type Meta Data
+function save_tour_type_meta_data($post_id) {
+    if (!isset($_POST['tour_type_nonce']) || !wp_verify_nonce($_POST['tour_type_nonce'], 'save_tour_type_meta')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    
+    $tour_types = $_POST['tour_types'] ?? [];
+    update_post_meta($post_id, 'tour_types', $tour_types);
+}
+add_action('save_post', 'save_tour_type_meta_data');
 
 // trip custom post type 
 
@@ -1418,7 +1515,7 @@ function register_trip_post_types() {
         'public' => true,
         'menu_position' => 6,
         'menu_icon' => 'dashicons-admin-site',
-        'supports' => array('title', 'editor'),
+        'supports' => array('title', 'editor' , 'thumbnail'),
         'show_in_rest' => true
     ));
 }
@@ -1431,7 +1528,6 @@ function add_trip_meta_boxes() {
 add_action('add_meta_boxes', 'add_trip_meta_boxes');
 
 function trip_basic_info_callback($post) {
-  
     wp_nonce_field('save_trip_meta_data_nonce', 'trip_meta_nonce');
 
     $trip_status = get_post_meta($post->ID, 'trip_status', true);
@@ -1442,9 +1538,11 @@ function trip_basic_info_callback($post) {
     $trip_rating = get_post_meta($post->ID, 'trip_rating', true);
     $trip_discount = get_post_meta($post->ID, 'trip_discount', true);
     $trip_duration = get_post_meta($post->ID, 'trip_duration', true);
-    ?>
+    $trip_tour_type = get_post_meta($post->ID, 'trip_tour_type', true);
 
-<input type="hidden" name="trip_meta_nonce" value="<?php echo wp_create_nonce('save_trip_meta_data_nonce'); ?>" />
+    ?>
+    <input type="hidden" name="trip_meta_nonce" value="<?php echo wp_create_nonce('save_trip_meta_data_nonce'); ?>" />
+
     <label for="trip_status">Trip Status:</label>
     <input type="text" name="trip_status" value="<?php echo esc_attr($trip_status); ?>" class="widefat" />
 
@@ -1452,7 +1550,20 @@ function trip_basic_info_callback($post) {
     <textarea name="trip_caption" class="widefat"><?php echo esc_textarea($trip_caption); ?></textarea>
 
     <label for="trip_gallery">Trip Gallery:</label>
-    <input type="text" name="trip_gallery" value="<?php echo esc_attr($trip_gallery); ?>" class="widefat" />
+    <div id="trip_gallery_container">
+        <input type="hidden" name="trip_gallery" id="trip_gallery" value="<?php echo esc_attr($trip_gallery); ?>" />
+        <button class="button upload_trip_gallery">Upload Images</button>
+        <div class="trip_gallery_preview">
+            <?php
+            if ($trip_gallery) {
+                $gallery_ids = explode(',', $trip_gallery);
+                foreach ($gallery_ids as $image_id) {
+                    echo wp_get_attachment_image($image_id, 'thumbnail');
+                }
+            }
+            ?>
+        </div>
+    </div>
 
     <label for="trip_destination">Destination:</label>
     <select name="trip_destination" class="widefat">
@@ -1460,6 +1571,17 @@ function trip_basic_info_callback($post) {
         $destinations = get_posts(array('post_type' => 'destination', 'numberposts' => -1));
         foreach ($destinations as $dest) {
             echo '<option value="' . $dest->ID . '"' . selected($destination, $dest->ID, false) . '>' . $dest->post_title . '</option>';
+        }
+        ?>
+    </select>
+
+    <label for="trip_tour_type">Tour Type:</label>
+    <select name="trip_tour_type" class="widefat">
+        <option value="">Select a Tour Type</option>
+        <?php
+        $tour_types = get_posts(array('post_type' => 'tour_type', 'numberposts' => -1));
+        foreach ($tour_types as $type) {
+            echo '<option value="' . $type->ID . '"' . selected($trip_tour_type, $type->ID, false) . '>' . $type->post_title . '</option>';
         }
         ?>
     </select>
@@ -1488,21 +1610,166 @@ function save_trip_meta_data($post_id) {
 
     if (!current_user_can('edit_post', $post_id)) return;
 
- 
-    // ... other update_post_meta() calls ...
-
-
-    if (!isset($_POST['trip_status'])) return;
     update_post_meta($post_id, 'trip_status', sanitize_text_field($_POST['trip_status']));
     update_post_meta($post_id, 'trip_caption', sanitize_textarea_field($_POST['trip_caption']));
-    update_post_meta($post_id, 'trip_gallery', esc_url($_POST['trip_gallery']));
+    update_post_meta($post_id, 'trip_gallery', sanitize_text_field($_POST['trip_gallery']));
     update_post_meta($post_id, 'trip_destination', intval($_POST['trip_destination']));
+    update_post_meta($post_id, 'trip_tour_type', intval($_POST['trip_tour_type']));
     update_post_meta($post_id, 'trip_price', floatval($_POST['trip_price']));
     update_post_meta($post_id, 'trip_rating', floatval($_POST['trip_rating']));
     update_post_meta($post_id, 'trip_discount', intval($_POST['trip_discount']));
     update_post_meta($post_id, 'trip_duration', sanitize_text_field($_POST['trip_duration']));
 }
 add_action('save_post', 'save_trip_meta_data');
+
+add_action('add_meta_boxes', 'trip_details_meta_box');
+add_action('save_post', 'save_trip_details_meta');
+
+function trip_details_meta_box() {
+    add_meta_box(
+        'trip_details',
+        'Trip Details',
+        'trip_details_callback',
+        'trip',
+        'normal',
+        'high'
+    );
+}
+
+function trip_details_callback($post) {
+    wp_nonce_field('trip_details_nonce', 'trip_details_nonce_field');
+    $trip_data = get_post_meta($post->ID, '_trip_details', true);
+    ?>
+    <div class="trip-tabs">
+        <ul class="nav-tabs">
+            <li class="active" data-tab="overview">Overview</li>
+            <li data-tab="itinerary">Itinerary</li>
+            <li data-tab="flights">Flights</li>
+        </ul>
+    </div>
+    
+    <div class="trip-tab-content">
+        <!-- Overview Section -->
+        <div class="tab-pane active" id="overview">
+            <label>Overview Header:</label>
+            <input type="text" name="trip[overview_header]" value="<?php echo esc_attr($trip_data['overview_header'] ?? ''); ?>">
+            
+            <label>Overview Description:</label>
+            <textarea name="trip[overview_description]"><?php echo esc_textarea($trip_data['overview_description'] ?? ''); ?></textarea>
+            
+            <label>What is Included:</label>
+            <ul class="repeatable-list" data-name="trip_included">
+                <?php if (!empty($trip_data['trip_included'])):
+                    foreach ($trip_data['trip_included'] as $included): ?>
+                        <li><input type="text" name="trip[trip_included][]" value="<?php echo esc_attr($included); ?>"> <button class="remove">x</button></li>
+                    <?php endforeach;
+                endif; ?>
+            </ul>
+            <button class="add-item" data-name="trip_included">Add Item</button>
+        </div>
+        
+        <!-- Itinerary Section -->
+        <div class="tab-pane" id="itinerary">
+            <label>Itinerary Header:</label>
+            <input type="text" name="trip[itinerary_header]" value="<?php echo esc_attr($trip_data['itinerary_header'] ?? ''); ?>">
+            
+            <label>Itinerary Description:</label>
+            <textarea name="trip[itinerary_description]"><?php echo esc_textarea($trip_data['itinerary_description'] ?? ''); ?></textarea>
+            
+            <label>Google Map:</label>
+            <input type="text" name="trip[google_map]" value="<?php echo esc_attr($trip_data['google_map'] ?? ''); ?>">
+            
+            <label>Itinerary Days:</label>
+            <div class="repeatable-days">
+                <?php if (!empty($trip_data['days'])):
+                    foreach ($trip_data['days'] as $index => $day): ?>
+                        <div class="day-item">
+                            <label>Day Header:</label>
+                            <input type="text" name="trip[days][<?php echo $index; ?>][day_header]" value="<?php echo esc_attr($day['day_header']); ?>">
+                            <label>Place Image:</label>
+                            <input type="file" name="trip[days][<?php echo $index; ?>][place_image]">
+                            <label>Arrival:</label>
+                            <input type="text" name="trip[days][<?php echo $index; ?>][arrival]" value="<?php echo esc_attr($day['arrival']); ?>">
+                            <label>Afternoon:</label>
+                            <input type="text" name="trip[days][<?php echo $index; ?>][afternoon]" value="<?php echo esc_attr($day['afternoon']); ?>">
+                        </div>
+                    <?php endforeach;
+                endif; ?>
+            </div>
+            <button class="add-day">Add Day</button>
+        </div>
+        
+        <!-- Flights Section -->
+        <div class="tab-pane" id="flights">
+            <label>Flight Header:</label>
+            <input type="text" name="trip[flight_header]" value="<?php echo esc_attr($trip_data['flight_header'] ?? ''); ?>">
+            
+            <label>Flight Description:</label>
+            <textarea name="trip[flight_description]"><?php echo esc_textarea($trip_data['flight_description'] ?? ''); ?></textarea>
+            
+            <label>Airfare:</label>
+            <ul class="repeatable-list" data-name="airfare">
+                <?php if (!empty($trip_data['airfare'])):
+                    foreach ($trip_data['airfare'] as $airfare): ?>
+                        <li><input type="text" name="trip[airfare][]" value="<?php echo esc_attr($airfare); ?>"> <button class="remove">x</button></li>
+                    <?php endforeach;
+                endif; ?>
+            </ul>
+            <button class="add-item" data-name="airfare">Add Item</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".nav-tabs li").forEach(tab => {
+                tab.addEventListener("click", function() {
+                    document.querySelectorAll(".nav-tabs li").forEach(el => el.classList.remove("active"));
+                    document.querySelectorAll(".tab-pane").forEach(el => el.classList.remove("active"));
+                    this.classList.add("active");
+                    document.getElementById(this.dataset.tab).classList.add("active");
+                });
+            });
+            
+            document.querySelectorAll(".add-item").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    let list = this.previousElementSibling;
+                    let name = this.dataset.name;
+                    let li = document.createElement("li");
+                    li.innerHTML = `<input type='text' name='trip[${name}][]'> <button class='remove'>x</button>`;
+                    list.appendChild(li);
+                });
+            });
+
+            document.addEventListener("click", function(e) {
+                if (e.target.classList.contains("remove")) {
+                    e.target.parentElement.remove();
+                }
+            });
+        });
+    </script>
+    <?php
+}
+
+function save_trip_details_meta($post_id) {
+    if (!isset($_POST['trip_details_nonce_field']) || !wp_verify_nonce($_POST['trip_details_nonce_field'], 'trip_details_nonce')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    
+    update_post_meta($post_id, '_trip_details', $_POST['trip']);
+}
+
+// Enqueue Scripts for Media Uploader
+function enqueue_trip_gallery_script($hook) {
+    global $post;
+    if ('post.php' === $hook || 'post-new.php' === $hook) {
+        wp_enqueue_media();
+        wp_enqueue_script('trip-gallery-js', get_template_directory_uri() . '/js/trip-gallery.js', array('jquery'), null, true);
+    }
+}
+add_action('admin_enqueue_scripts', 'enqueue_trip_gallery_script');
+
+
+
 
 function custom_admin_styles() {
     echo '
@@ -1637,7 +1904,6 @@ function remove_wp_logo( $wp_admin_bar ) {
 }
 add_action('admin_bar_menu', 'remove_wp_logo', 999);
 
-// to hide to toolbar while the page loaded 
 function fix_admin_bar_visibility() {
     if (is_admin_bar_showing()) {
         echo '<style>#wpadminbar { display: none !important; }</style>';
@@ -1654,4 +1920,6 @@ function fix_admin_bar_visibility() {
     }
 }
 add_action('wp_head', 'fix_admin_bar_visibility');
+
+
 ?>
