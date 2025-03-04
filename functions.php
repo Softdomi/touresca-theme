@@ -1,5 +1,4 @@
 <?php
-
 // include customizer file 
 // posts
 // 1-the post thumbnail it does not exist in all themes
@@ -15,7 +14,6 @@ function add_styles(){
     wp_enqueue_style('swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', array(), '11.0.0', 'all');
     wp_enqueue_style('tailwindcss', 'https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css', array(), null , false);
     wp_enqueue_style('fontawesome' , get_template_directory_uri() . '/css/all.min.css');
-
     wp_enqueue_style('dashboard-css-file' , get_template_directory_uri() . '/css/dashboard-style.css' ,  array(), time(), 'all');
     wp_enqueue_style('main-css-file' , get_template_directory_uri() . '/css/main.css' ,  array(), time(), 'all');
 }
