@@ -1,0 +1,9 @@
+input , textarea{
+    border: 1px solid #eee;
+    border-radius: 8px;
+    outline: none;
+    width:60% !important;
+    margin-bottom: 16px;
+    padding: 4px ;
+    
+}
