@@ -2955,6 +2955,8 @@ function custom_admin_styles() {
         #wpcontent, #wpfooter {
             margin-left: 250px !important;
         }
+            
+
     </style>
     ';
 }
@@ -3057,8 +3059,6 @@ function custom_admin_logo() { ?>
     </style>
 <?php }
 add_action('admin_head', 'custom_admin_logo');
-
-
 
 function custom_styles() { ?>
     <style>
