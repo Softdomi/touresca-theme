@@ -3058,16 +3058,7 @@ function custom_admin_logo() { ?>
 <?php }
 add_action('admin_head', 'custom_admin_logo');
 
-function custom_admin_logo() { ?>
-    <style>
-        #wp-admin-bar-wp-logo > .ab-item .ab-icon {
-            background-image: url('<?php echo get_template_directory_uri(); ?>/images/logo_fotr.png') !important;
-            background-size: contain !important;
-        }
-        
-    </style>
-<?php }
-add_action('admin_head', 'custom_admin_logo');
+
 
 function custom_styles() { ?>
     <style>
