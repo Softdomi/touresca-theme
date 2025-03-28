@@ -26,15 +26,18 @@ $trip_gallery = get_post_meta($trip_id, 'trip_gallery', true);
 $trip_gallery = is_array($trip_gallery) ? $trip_gallery : (is_string($trip_gallery) ? explode(',', $trip_gallery) : []);
 
 // Get image URLs
-$trip_gallery_urls = array_filter(array_map('wp_get_attachment_url', $trip_gallery)); 
+$trip_gallery_urls = array_values(array_filter(array_map('wp_get_attachment_url', $trip_gallery))); 
+
+
 
 $gallery_json = !empty($trip_gallery_urls) ? json_encode($trip_gallery_urls) : '[]';
 $trip_thumbnail = !empty($trip_gallery_urls) ? reset($trip_gallery_urls) : "no-image.jpg";
-// Safely get thumbnails, checking if the index exists
-$trip_thumbnail1 = isset($trip_gallery_urls[0]) ? $trip_gallery_urls[0] : "no image";
-$trip_thumbnail2 = isset($trip_gallery_urls[1]) ? $trip_gallery_urls[1] : "no image";
-$trip_thumbnail3 = isset($trip_gallery_urls[2]) ? $trip_gallery_urls[2] : "no image";
-$trip_thumbnail4 = isset($trip_gallery_urls[3]) ? $trip_gallery_urls[3] : "no image";
+
+// Safely get thumbnails, ensuring indexes exist
+$trip_thumbnail1 = $trip_gallery_urls[0] ?? null;
+$trip_thumbnail2 = $trip_gallery_urls[1] ?? null;
+$trip_thumbnail3 = $trip_gallery_urls[2] ?? null;
+$trip_thumbnail4 = $trip_gallery_urls[3] ?? null;
 
 
 ?>
@@ -50,9 +53,12 @@ $trip_thumbnail4 = isset($trip_gallery_urls[3]) ? $trip_gallery_urls[3] : "no im
                 <span class="bg-[#FFB800] px-3 py-1 rounded-full text-sm font-medium"><?php echo esc_html($trip_status) ?></span>
             </div>
      
-            <img src="<?php echo esc_url($trip_thumbnail1)?>" 
-                 alt="<?php echo $trip_title?>" 
-                 class="w-full h-full object-cover ">
+           
+            <?php if (!empty($trip_thumbnail1)): ?>
+                <img src="<?php echo esc_url($trip_thumbnail1); ?>" 
+                     alt="<?php echo esc_attr($trip_title); ?>" 
+                     class="w-full h-full object-cover">
+            <?php endif; ?>
         </div>
 
         <!-- Right side content -->
@@ -108,7 +114,7 @@ $trip_thumbnail4 = isset($trip_gallery_urls[3]) ? $trip_gallery_urls[3] : "no im
                         </p>
                     </li>
                 </ul>
-                <?php if ($trip_discount) ?>
+                <?php if (!empty($trip_discount)) ?>
                 <strong class="max-w-[100px] font-semibold flex justify-center items-center rounded-[32px] bg-[#DFFE8E]">
                 <?php echo esc_html($trip_discount) ?> %</strong>
               
@@ -127,21 +133,33 @@ $trip_thumbnail4 = isset($trip_gallery_urls[3]) ? $trip_gallery_urls[3] : "no im
 
             <!-- Bottom row of images -->
             <div class="grid grid-cols-12  gap-2 h-[250px]">
-    <img src="<?php echo  esc_url($trip_thumbnail2)?>" 
-    alt="<?php echo $trip_title?>" 
-         class=" w-full h-full object-cover col-span-4">
+            <?php if (!empty($trip_thumbnail2)): ?>
+                <img src="<?php echo esc_url($trip_thumbnail2); ?>" 
+                     alt="<?php echo esc_attr($trip_title); ?>" 
+                     class="w-full h-full object-cover col-span-4">
+            <?php endif; ?>
+
     
-    <img src="<?php echo esc_url($trip_thumbnail3)?>" 
-    alt="<?php echo $trip_title?>" 
-         class=" w-full h-full object-cover col-span-3">
+            <?php if (!empty($trip_thumbnail3)): ?>
+                <img src="<?php echo esc_url($trip_thumbnail3); ?>" 
+                     alt="<?php echo esc_attr($trip_title); ?>" 
+                     class="w-full h-full object-cover col-span-3">
+            <?php endif; ?>
+
+
     
     <div class="relative modal-btn cursor-pointer col-span-5">
-        <img src="<?php echo  esc_url($trip_thumbnail4)?>" 
-        alt="<?php echo $trip_title?>"
-             class=" w-full h-full object-cover">
+    <?php if (!empty($trip_thumbnail4)): ?>
+                <img src="<?php echo esc_url($trip_thumbnail4); ?>" 
+                     alt="<?php echo esc_attr($trip_title); ?>" 
+                     class="w-full h-full object-cover">
+            <?php endif; ?>
+  
+            <?php if (count($trip_gallery_urls) > 4): ?>
         <div class="absolute bottom-2 right-2  bg-black/30  bg-white text-black text-sm font-medium px-3 py-1 rounded-full shadow-md">
-            <span class="text-[#05363D] font-medium">See all <?php echo count($trip_gallery_urls) ?> photos</span>
+            <span class="text-[#05363D] font-medium">See all <?php echo count($trip_gallery_urls ) ?> photos</span>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -157,21 +175,36 @@ $trip_thumbnail4 = isset($trip_gallery_urls[3]) ? $trip_gallery_urls[3] : "no im
                 </h1>
         <div class="grid grid-cols-2 gap-2 h-[320px]">
             <div class="col-span-1">
-                <img src="<?php echo  esc_url($trip_thumbnail1)?>" 
-                     alt="<?php echo esc_html($trip_title) ?>" 
-                     class=" w-full h-full object-cover">
+            <?php if (!empty($trip_thumbnail1)): ?>
+                <img src="<?php echo esc_url($trip_thumbnail1); ?>" 
+                     alt="<?php echo esc_attr($trip_title); ?>" 
+                     class="w-full h-full object-cover">
+            <?php endif; ?>
+     
             </div>
             <div class="grid col-span-1 gap-2 h-full">
-                <img src="<?php echo  esc_url($trip_thumbnail2)?>" 
-                     alt="<?php echo esc_html($trip_title) ?>" 
-                     class=" w-full h-[155px] object-cover">
+           
+
+                     <?php if (!empty($trip_thumbnail2)): ?>
+                <img src="<?php echo esc_url($trip_thumbnail2); ?>" 
+                     alt="<?php echo esc_attr($trip_title); ?>" 
+                     class="w-full h-[155px] object-cover">
+            <?php endif; ?>
+                     
                 <div class="relative modal-btn cursor-pointer h-[155px]">
+                <?php if (count($trip_gallery_urls) > 3): ?>
                     <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 h-[34px]   bg-white text-black text-sm font-medium px-2 min-w-[100px] py-1 rounded-full shadow-md flex items-center justify-center">
                         <span class="text-[#05363D] font-medium">+<?php echo count($trip_gallery_urls) ?> Photos</span>
                     </div>
-                    <img src="<?php echo  esc_url($trip_thumbnail3)?>" 
-                         alt="<?php echo esc_html($trip_title) ?>" 
-                         class=" w-full h-full object-cover">
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($trip_thumbnail3)): ?>
+                <img src="<?php echo esc_url($trip_thumbnail3); ?>" 
+                     alt="<?php echo esc_attr($trip_title); ?>" 
+                     class="w-full h-full object-cover">
+            <?php endif; ?>
+
+
                 </div>
             </div>
         </div>
@@ -225,9 +258,11 @@ $trip_thumbnail4 = isset($trip_gallery_urls[3]) ? $trip_gallery_urls[3] : "no im
                     </li>
                 </ul>
                 <div class="ms-4 ">
-                <?php if ($trip_discount) ?>
+                <?php if (!empty($trip_discount)) ?>
                 <strong class="max-w-[100px] font-semibold flex justify-center items-center rounded-[32px] bg-[#DFFE8E] mt-4">
-                <?php echo esc_html($trip_discount) ?> %</strong>
+                 
+                <?php echo esc_html($trip_discount) ?> %
+            </strong>
               
                
                     <div class="flex items-center gap-2 mt-4 text-[#05363D] ">
