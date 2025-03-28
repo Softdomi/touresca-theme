@@ -17,8 +17,8 @@ $destination_sections = get_posts(array(
 
 if (!empty($destination_sections)) {
  
-    if (isset($destination_sections[0])) {
-        $section1 = $destination_sections[0];
+    if (isset($destination_sections[1])) {
+        $section1 = $destination_sections[1];
         $section1_title = get_the_title($section1->ID);
     
         ?>
