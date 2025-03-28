@@ -2977,9 +2977,86 @@ function custom_login_logo() { ?>
             width: 100% !important;
             height: 80px !important;
         }
+        /* Set the background color of the entire login page */
+body.login {
+    background: linear-gradient(180deg, #276C76 16.67%, #BAD0B4 100%);
+
+}
+
+/* Style the login form container */
+#login {
+    background:#276C76; /* White background */
+    padding: 20px;
+    border-radius: 20px; /* Rounded corners */
+    border:none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle drop shadow */
+    width:430px;
+
+    margin: 120px auto !important;
+}
+@media(max-width:992px){
+    #login {
+
+    width:320px !important;
+ 
+    
+    margin: 120px auto !important;
+} 
+}
+#login label , #login p  , #login .backtoblog , #login a{
+    color: #fff !important;
+}
+#loginform , .login form{
+    background: transparent !important; 
+    border:none !important;
+    
+}
+.login .button.wp-hide-pw .dashicons {
+    color: #06414A;
+}
+/* Style the input fields */
+#loginform input[type="text"],
+#loginform input[type="password"] {
+    border-radius: 8px; /* Rounded corners for inputs */
+    border: 1px solid #ccc;
+    
+}
+.login .message, .login .notice, .login .success{
+    background:transparent !important;
+    border-left: 4px solid #C8E677 !important;
+    box-shadow: none !important;
+}
+
+/* Style the login button */
+#wp-submit {
+    background-color: #C8E677 ; 
+    color: #06414A;
+    border-radius: 8px;
+    transition:0.5s all ;
+    border: none;
+    min-width:140px;
+    min-height:10px !important;
+    font-weight:700;
+    font-size:16px;
+}
+
+#wp-submit:hover {
+  opacity:0.7;
+}
     </style>
 <?php }
 add_action('login_head', 'custom_login_logo');
+
+function custom_admin_logo() { ?>
+    <style>
+        #wp-admin-bar-wp-logo > .ab-item .ab-icon {
+            background-image: url('<?php echo get_template_directory_uri(); ?>/images/logo_fotr.png') !important;
+            background-size: contain !important;
+        }
+        
+    </style>
+<?php }
+add_action('admin_head', 'custom_admin_logo');
 
 function custom_admin_logo() { ?>
     <style>
